@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import usersRoutes from './../routers/users.routers';
 import notesRoutes from './../routers/notes.routers';
+import dbConnection from '../database/dbConnectin';
 
 dotenv.config();
 const app = express();
@@ -20,3 +21,12 @@ app.all('*', (req: Request, res: Response) =>
 app.listen(port, () => {
 	console.log(`server running on http://localhost:${port}`);
 });
+
+(async () => {
+	try {
+		await dbConnection.authenticate();
+		console.log('Connection has been established successfully.');
+	} catch (error) {
+		console.error('Unable to connect to the database:', error);
+	}
+})();
