@@ -19,7 +19,7 @@ router.post('/signin', signIn);
 
 router.patch('/', updateUser);
 
-router.delete('/', deleteUser);
+router.delete('/:id', deleteUser);
 
 router.get('/search', searchUser);
 
