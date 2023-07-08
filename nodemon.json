@@ -1,5 +1,5 @@
 {
-	"watch": ["src", "routers", "controllers"],
+	"watch": ["src", "routers", "controllers", "database", "models"],
 	"ext": ".ts,.js",
 	"exec": "ts-node ./src/index.ts"
 }

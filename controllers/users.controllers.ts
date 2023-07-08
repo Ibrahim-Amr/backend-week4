@@ -19,7 +19,24 @@ export const getUsers = async (req: Request, res: Response) => {
 	}
 };
 
-export const signUp = async (req: Request, res: Response) => {};
+export const signUp = async (req: Request, res: Response) => {
+	try {
+		const userData = req.body;
+		const signUp = await userModel.create(userData);
+		res.status(200).json({
+			success: true,
+			message: 'Users created successfully',
+			data: signUp,
+		});
+	} catch (err) {
+		console.log(err);
+		res.status(500).json({
+			success: false,
+			message: 'Error signing up',
+			error: err,
+		});
+	}
+};
 
 export const signIn = (req: Request, res: Response) => {};
 

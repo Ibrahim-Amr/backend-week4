@@ -19,13 +19,13 @@ app.all('*', (req: Request, res: Response) =>
 );
 
 app.listen(port, () => {
-	console.log(`server running on http://localhost:${port}`);
+	console.info(`server running on http://localhost:${port}`);
 });
 
 (async () => {
 	try {
 		await dbConnection.authenticate();
-		console.log('Connection has been established successfully.');
+		console.info('Connection has been established successfully.');
 	} catch (error) {
 		console.error('Unable to connect to the database:', error);
 	}
