@@ -1,7 +1,9 @@
 import { Sequelize } from 'sequelize';
+import dotenv from 'dotenv';
 
-const dbConnection = new Sequelize('sequelize', 'root', '', {
-	host: 'localhost',
+dotenv.config();
+const dbConnection = new Sequelize(process.env.DB_NAME, process.env.DB_USER, '', {
+	host: process.env.DB_HOST,
 	dialect: 'mysql',
 });
 
