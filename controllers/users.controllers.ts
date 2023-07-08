@@ -1,6 +1,16 @@
 import { Request, Response } from 'express';
 import userModel from '../models/user.model';
 
+interface User {
+	id: number;
+	name: string;
+	email: string;
+	password: string;
+	age: number;
+	createdAt: string;
+	updatedAt: string;
+}
+
 export const getUsers = async (req: Request, res: Response) => {
 	try {
 		const users = await userModel.findAll();
@@ -49,30 +59,64 @@ export const signUp = async (req: Request, res: Response) => {
 	}
 };
 
-export const signIn = (req: Request, res: Response) => {};
+export const signIn = async (req: Request, res: Response) => {
+	try {
+		const { email, password } = req.body;
+		const existingUser: User | any = await userModel.findOne({ where: { email } });
+
+		if (!existingUser) {
+			return res.status(404).json({
+				success: false,
+				message: 'User not found',
+			});
+		}
+
+		if (password !== existingUser.password) {
+			return res.status(401).json({
+				success: false,
+				message: 'Incorrect password',
+			});
+		}
+
+		const userWithoutPassword: User = { ...existingUser.toJSON() };
+		delete userWithoutPassword.password;
+		res.status(200).json({
+			success: true,
+			message: 'User authenticated successfully',
+			data: userWithoutPassword,
+		});
+	} catch (err) {
+		console.log(err);
+		res.status(500).json({
+			success: false,
+			message: 'Error signing in',
+			error: err,
+		});
+	}
+};
 
 export const updateUser = (req: Request, res: Response) => {};
 
 export const deleteUser = async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
-		const user = await userModel.findOne({ where: { id } });
-		if (user) {
+		const existingUser = await userModel.findOne({ where: { id } });
+		if (existingUser) {
 			await userModel.destroy({
 				where: {
 					id,
 				},
 			});
-			res.status(200).json({
+			return res.status(200).json({
 				success: true,
 				message: 'Users deleted successfully',
 			});
-		} else {
-			res.status(404).json({
-				success: false,
-				message: "User doesn't exist",
-			});
 		}
+
+		res.status(404).json({
+			success: false,
+			message: "User doesn't exist",
+		});
 	} catch (err) {
 		console.log(err);
 		res.status(500).json({
