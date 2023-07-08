@@ -22,6 +22,17 @@ export const getUsers = async (req: Request, res: Response) => {
 export const signUp = async (req: Request, res: Response) => {
 	try {
 		const userData = req.body;
+		const existingUser = await userModel.findOne({
+			attributes: ['email'],
+			where: { email: userData.email },
+		});
+		if (existingUser) {
+			return res.status(409).json({
+				success: false,
+				message: 'Users already exists',
+			});
+		}
+
 		const signUp = await userModel.create(userData);
 		res.status(201).json({
 			success: true,
