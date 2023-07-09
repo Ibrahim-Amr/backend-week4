@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import userModel from '../models/user.model';
+import { Op } from 'sequelize';
 
 interface User {
 	id: number;
@@ -163,6 +164,22 @@ export const deleteUser = async (req: Request, res: Response) => {
 	}
 };
 
-export const searchUser = (req: Request, res: Response) => {};
+export const searchUser = async (req: Request, res: Response) => {
+	try {
+		const users = await userModel.findAll({
+			where: {
+				age: { [Op.between]: [20, 30] },
+			},
+		});
+
+		res.status(200).json({
+			success: true,
+			message: 'Users retrieved successfully',
+			data: users,
+		});
+	} catch (err) {
+		console.log(err);
+	}
+};
 
 export const searchUserIds = (req: Request, res: Response) => {};
