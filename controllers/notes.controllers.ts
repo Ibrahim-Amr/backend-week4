@@ -73,7 +73,6 @@ export const addNote = async (req: Request, res: Response) => {
 	try {
 		const note = req.body;
 		const existingUser: any = await userModel.findOne({ where: { id: note.userId } });
-		console.log(existingUser);
 
 		if (!existingUser) {
 			return res.status(401).json({
