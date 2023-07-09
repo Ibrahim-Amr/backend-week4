@@ -95,7 +95,43 @@ export const signIn = async (req: Request, res: Response) => {
 	}
 };
 
-export const updateUser = (req: Request, res: Response) => {};
+export const updateUser = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params;
+		const updatedUser = req.body;
+
+		const existingUser = await userModel.findOne({
+			attributes: ['email'],
+			where: { id },
+		});
+
+		if (!existingUser) {
+			return res.status(404).json({
+				success: false,
+				message: 'User not found',
+			});
+		}
+
+		await userModel.update(updatedUser, { where: { id } });
+		const afterUpdate = await userModel.findOne({
+			attributes: { exclude: ['password'] },
+			where: { id },
+		});
+
+		res.status(200).json({
+			success: true,
+			message: 'User updated successfully',
+			data: afterUpdate,
+		});
+	} catch (err) {
+		console.log(err);
+		res.status(500).json({
+			success: false,
+			message: 'Error updating user',
+			error: err,
+		});
+	}
+};
 
 export const deleteUser = async (req: Request, res: Response) => {
 	try {
