@@ -35,7 +35,10 @@ const userModel = dbConnection.define('User', {
 			notEmpty: {
 				msg: 'Password cannot be empty.',
 			},
-			len: [6, 20],
+			len: {
+				args: [6, 20],
+				msg: 'Password must be between 6 and 20 characters.',
+			},
 		},
 	},
 	age: {

@@ -27,7 +27,47 @@ export const getNotes = async (req: Request, res: Response) => {
 	}
 };
 
-export const getNotesWithOwners = (req: Request, res: Response) => {};
+export const getNotesWithOwners = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params;
+		const existingNote: any = await noteModel.findOne({
+			where: {
+				id,
+			},
+		});
+
+		if (!existingNote) {
+			return res.status(404).json({
+				success: false,
+				message: 'Note not found',
+			});
+		}
+
+		const auther = await userModel.findOne({
+			attributes: {
+				exclude: ['password'],
+			},
+			where: {
+				id: existingNote.userId,
+			},
+		});
+		res.status(200).json({
+			success: true,
+			message: 'Note retrieved successfully',
+			data: {
+				note: existingNote,
+				auther: auther,
+			},
+		});
+	} catch (err) {
+		console.log(err);
+		res.status(500).json({
+			success: false,
+			message: 'Error getting notes',
+			error: err,
+		});
+	}
+};
 
 export const addNote = async (req: Request, res: Response) => {
 	try {
@@ -49,11 +89,11 @@ export const addNote = async (req: Request, res: Response) => {
 			data: response,
 		});
 	} catch (err) {
-		// console.log(err);
+		console.log(err);
 		res.status(500).json({
 			success: false,
 			message: 'Error adding notes',
-			// error: err,
+			error: err,
 		});
 	}
 };
