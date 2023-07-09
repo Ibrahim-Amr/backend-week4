@@ -172,6 +172,13 @@ export const searchUser = async (req: Request, res: Response) => {
 			},
 		});
 
+		if (!users) {
+			return res.status(404).json({
+				success: false,
+				message: 'User not found',
+			});
+		}
+
 		res.status(200).json({
 			success: true,
 			message: 'Users retrieved successfully',
@@ -179,7 +186,44 @@ export const searchUser = async (req: Request, res: Response) => {
 		});
 	} catch (err) {
 		console.log(err);
+		res.status(500).json({
+			success: false,
+			message: 'Error getting users',
+			error: err,
+		});
 	}
 };
 
-export const searchUserIds = (req: Request, res: Response) => {};
+export const searchUserIds = async (req: Request, res: Response) => {
+	try {
+		const { ids } = req.body;
+		const users = await userModel.findAll({
+			attributes: {
+				exclude: ['password'],
+			},
+			where: {
+				id: { [Op.in]: ids },
+			},
+		});
+
+		if (!users) {
+			return res.status(404).json({
+				success: false,
+				message: 'User not found',
+			});
+		}
+
+		res.status(200).json({
+			success: true,
+			message: 'Users retrieved successfully',
+			data: users,
+		});
+	} catch (err) {
+		console.log(err);
+		res.status(500).json({
+			success: false,
+			message: 'Error getting users',
+			error: err,
+		});
+	}
+};

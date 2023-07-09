@@ -23,6 +23,6 @@ router.delete('/:id', deleteUser);
 
 router.get('/search', searchUser);
 
-router.get('/search', searchUserIds);
+router.post('/searchids', searchUserIds);
 
 export default router;
