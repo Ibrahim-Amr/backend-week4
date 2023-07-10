@@ -37,6 +37,7 @@ export const signUp = async (req: Request, res: Response) => {
 			attributes: ['email'],
 			where: { email: userData.email },
 		});
+
 		if (existingUser) {
 			return res.status(409).json({
 				success: false,

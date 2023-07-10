@@ -15,7 +15,7 @@ router.get('/owners/:id', getNotesWithOwners);
 
 router.post('/', addNote);
 
-router.delete('', deleteNote);
+router.delete('/:id', deleteNote);
 
 router.patch('/:id', updateNote);
 

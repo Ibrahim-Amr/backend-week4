@@ -99,8 +99,10 @@ export const addNote = async (req: Request, res: Response) => {
 
 export const deleteNote = async (req: Request, res: Response) => {
 	try {
-		const { id, userId } = req.body;
+		const { id } = req.params;
+		const { userId } = req.body;
 		const existingNote: any = await noteModel.findOne({ where: { id } });
+
 		if (!existingNote) {
 			return res.status(404).json({
 				success: false,
