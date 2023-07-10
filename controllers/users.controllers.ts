@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import userModel from '../models/user.model';
 import { Op } from 'sequelize';
+import noteModel from '../models/note.model';
 
 interface User {
 	id: number;
@@ -139,21 +140,27 @@ export const deleteUser = async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
 		const existingUser = await userModel.findOne({ where: { id } });
-		if (existingUser) {
-			await userModel.destroy({
-				where: {
-					id,
-				},
-			});
-			return res.status(200).json({
-				success: true,
-				message: 'Users deleted successfully',
+
+		if (!existingUser) {
+			return res.status(404).json({
+				success: false,
+				message: "User doesn't exist",
 			});
 		}
 
-		res.status(404).json({
-			success: false,
-			message: "User doesn't exist",
+		await noteModel.destroy({
+			where: { userId: id },
+		});
+
+		await userModel.destroy({
+			where: {
+				id,
+			},
+		});
+
+		return res.status(200).json({
+			success: true,
+			message: 'Users deleted successfully',
 		});
 	} catch (err) {
 		console.log(err);
